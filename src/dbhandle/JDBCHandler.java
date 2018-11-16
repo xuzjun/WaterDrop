@@ -1,4 +1,4 @@
-package example;
+package dbhandle;
 
 import java.sql.*;
 

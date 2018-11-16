@@ -1,10 +1,8 @@
-package example;
+package dbhandle;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Objects;
 import java.util.Properties;
 
 /**
@@ -14,10 +12,6 @@ public class DBConfigProperties {
 
     private Properties properties;
     private URL url;
-
-    static {
-
-    }
 
     public DBConfigProperties(URL url) {
         this.url = url;

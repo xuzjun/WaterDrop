@@ -4,8 +4,8 @@ import dao.TraderDao;
 import dbconfigutil.ParseSqlConfig;
 import dbconfigutil.SqlStruct;
 import entities.Trader;
-import example.DBConfigProperties;
-import example.JDBCHandler;
+import dbhandle.DBConfigProperties;
+import dbhandle.JDBCHandler;
 import exceptions.TagAttributeNotFoundException;
 import org.dom4j.DocumentException;
 

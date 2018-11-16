@@ -2,7 +2,7 @@ package dao;
 
 import dbconfigutil.SqlStruct;
 import entities.Trader;
-import example.JDBCHandler;
+import dbhandle.JDBCHandler;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
