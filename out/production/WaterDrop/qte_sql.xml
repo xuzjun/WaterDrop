@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="GBK" standalone="no"?>
+<properties>
+    <items>
+        <item>
+            <name>GET_TRADER</name>
+            <sql>select f_trader_id, f_seat_id, f_password, f_state, f_ch_password from t_reg_trader where f_trader_id=?</sql>
+            <arguments>
+                <argument type="String" seq="1">f_trader_id</argument>
+            </arguments>
+            <results>
+                <rs type="String" var_name="traderID">f_trader_id</rs>
+                <rs type="String" var_name="seatID">f_seat_id</rs>
+                <rs type="String" var_name="password">f_password</rs>
+                <rs type="Integer" var_name="destroyFlag">f_state</rs>
+                <rs type="String" var_name="chPassword">f_ch_password</rs>
+            </results>
+        </item>
+        <item>
+            <name>GET_TRADER_PERMISSION</name>
+            <sql>select f_trader_id, f_trader_right, f_destroy_flag from t_reg_trader_permission where f_trader_id=? and f_trader_right=?</sql>
+            <arguments>
+                <argument type="String" seq="1">f_trader_id</argument>
+                <argument type="Integer" seq="2">f_trader_right</argument>
+            </arguments>
+            <results>
+                <rs type="String" var_name="traderID">f_trader_id</rs>
+                <rs type="Integer" var_name="traderRight">f_trader_right</rs>
+                <rs type="Integer" var_name="destroyFlag">f_destroy_flag</rs>
+            </results>
+        </item>
+    </items>
+</properties>
