@@ -8,6 +8,6 @@ import datagram.Datagram;
 public class ServiceFactory {
 
     static ServiceHandler getServiceHandler(Datagram data) {
-        return null;
+        return new TraderLoginHandler(data);
     }
 }

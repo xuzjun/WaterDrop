@@ -1,21 +1,14 @@
 package network;
 
-import datagram.DatagramDecoder;
-import datagram.DatagramEncoder;
-
-import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetDecoder;
 import java.util.Iterator;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingDeque;
 
 /**
  * @author len
@@ -23,34 +16,47 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class Server implements Runnable {
 
     private final int port;
-    private final ConcurrentLinkedQueue receiveQueue;
-    private final ConcurrentLinkedQueue sendQueue;
-    private final DatagramDecoder decoder;
-    private final DatagramEncoder encoder;
+    private final LinkedBlockingDeque<SocketAndBuffer> receiveQueue;
+    private final LinkedBlockingDeque<SocketAndBuffer> sendQueue;
 
     public Server(int port,
-                  ConcurrentLinkedQueue receiveQueue,
-                  ConcurrentLinkedQueue sendQueue,
-                  DatagramDecoder decoder,
-                  DatagramEncoder encoder) {
+                  LinkedBlockingDeque<SocketAndBuffer> receiveQueue,
+                  LinkedBlockingDeque<SocketAndBuffer> sendQueue) {
         this.port = port;
         this.receiveQueue = receiveQueue;
         this.sendQueue = sendQueue;
-        this.decoder = decoder;
-        this.encoder = encoder;
     }
 
-    private static void read(SelectionKey selectionKey) throws IOException {
-
-        ByteBuffer buffer = ByteBuffer.allocate(64);
+    private void read(SelectionKey selectionKey) throws IOException {
+        ByteBuffer dataLenBuffer = ByteBuffer.allocate(4);
         SocketChannel sc = (SocketChannel) selectionKey.channel();
-        sc.read(buffer);
-        buffer.flip();
-        Charset charset = Charset.forName("gbk");
-        CharsetDecoder decoder = charset.newDecoder();
-        CharBuffer charBuffer = decoder.decode(buffer.asReadOnlyBuffer());
-        System.out.println(charBuffer.toString());
-        sc.write(buffer);
+        do {
+            int r = sc.read(dataLenBuffer);
+            if (r == 0) {
+                break;
+            }
+            if (r == -1) {
+                sc.close();
+                break;
+            }
+            dataLenBuffer.flip();
+            int dataLen = dataLenBuffer.getInt();
+
+            ByteBuffer dataBuffer = ByteBuffer.allocate(4 + dataLen);
+            dataBuffer.putInt(dataLen);
+            sc.read(dataBuffer);
+            dataBuffer.flip();
+            receiveQueue.add(new SocketAndBuffer(sc, dataBuffer));
+        } while (true);
+    }
+
+    private int write(SocketChannel sc, ByteBuffer buffer) {
+        try {
+            return sc.write(buffer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     @Override
@@ -63,10 +69,8 @@ public class Server implements Runnable {
             serverSocketChannel.configureBlocking(false);
             serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
             while (true) {
-                selector.select();
-
+                selector.select(100);
                 Iterator<SelectionKey> it = selector.selectedKeys().iterator();
-                System.out.println("comething happend");
                 while (it.hasNext()) {
                     SelectionKey selectionKey = it.next();
                     if (selectionKey.isAcceptable()) {
@@ -74,9 +78,6 @@ public class Server implements Runnable {
                         ServerSocketChannel socketChannel = (ServerSocketChannel) selectionKey.channel();
                         SocketChannel sc = socketChannel.accept();
                         if (sc != null) {
-                            ByteBuffer buffer = ByteBuffer.wrap(new String("Hello, client\n").getBytes());
-
-                            sc.write(buffer);
                             sc.configureBlocking(false);
                             sc.register(selector, SelectionKey.OP_READ);
                         } else {
@@ -84,9 +85,15 @@ public class Server implements Runnable {
                         }
                     } else if (selectionKey.isReadable()) {
                         System.out.println("readable");
-                        read(selectionKey);
+                        this.read(selectionKey);
                     }
                     it.remove();
+                }
+
+                SocketAndBuffer socketAndBuffer = sendQueue.poll();
+                if (socketAndBuffer != null) {
+                    int ret = write(socketAndBuffer.getSocketChannel(), socketAndBuffer.getBuffer());
+                    System.out.println("ret [%d]" + ret);
                 }
             }
         } catch (IOException e) {
