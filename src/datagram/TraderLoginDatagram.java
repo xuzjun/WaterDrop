@@ -49,8 +49,8 @@ public class TraderLoginDatagram implements Datagram {
 
 
     @Override
-    public String toSendString() {
-        return null;
+    public String toString() {
+        return new String("Trader id: " + traderID + ", Seat id: " + seatID);
     }
 
     @Override
