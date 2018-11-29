@@ -1,4 +1,6 @@
-package network;
+package client;
+
+import consts.CommConst;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -18,16 +20,14 @@ import java.util.Iterator;
 public class Client {
 
     public static void main(String[] args) {
-        ByteBuffer buffer = ByteBuffer.allocate(7);
-        buffer.putInt(3);
-        buffer.put(new String("AMN").getBytes(), 0, 3);
+        ByteBuffer buffer = DatagramMaker.makeTraderLoginReqDatagram();
+        buffer.flip();
 
         try (SocketChannel socketChannel = SocketChannel.open()) {
             //连接服务端socket
             SocketAddress socketAddress = new InetSocketAddress("localhost", 8090);
             socketChannel.connect(socketAddress);
 
-            buffer.flip();
             socketChannel.write(buffer);
             buffer.clear();
 
@@ -45,7 +45,7 @@ public class Client {
                     System.out.println("socket readable.");
                 }
 
-                ByteBuffer buffer1 = ByteBuffer.allocate(4);
+                ByteBuffer buffer1 = ByteBuffer.allocate(CommConst.INT_SIZE);
                 sc.read(buffer1);
                 buffer1.flip();
                 int len = buffer1.getInt();

@@ -1,5 +1,7 @@
 package network;
 
+import consts.CommConst;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -28,7 +30,7 @@ public class Server implements Runnable {
     }
 
     private void read(SelectionKey selectionKey) throws IOException {
-        ByteBuffer dataLenBuffer = ByteBuffer.allocate(4);
+        ByteBuffer dataLenBuffer = ByteBuffer.allocate(CommConst.INT_SIZE);
         SocketChannel sc = (SocketChannel) selectionKey.channel();
         do {
             int r = sc.read(dataLenBuffer);
@@ -42,8 +44,7 @@ public class Server implements Runnable {
             dataLenBuffer.flip();
             int dataLen = dataLenBuffer.getInt();
 
-            ByteBuffer dataBuffer = ByteBuffer.allocate(4 + dataLen);
-            dataBuffer.putInt(dataLen);
+            ByteBuffer dataBuffer = ByteBuffer.allocate(dataLen);
             sc.read(dataBuffer);
             dataBuffer.flip();
             receiveQueue.add(new SocketAndBuffer(sc, dataBuffer));

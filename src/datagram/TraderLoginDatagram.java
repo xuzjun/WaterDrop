@@ -3,9 +3,8 @@ package datagram;
 /**
  * @author xuzjun
  */
-public class TraderLoginDatagram implements Datagram {
+public class TraderLoginDatagram extends Datagram {
 
-    private int cmd;
     private String traderID;
     private String seatID;
     private int rspCode;
@@ -25,10 +24,6 @@ public class TraderLoginDatagram implements Datagram {
 
     public void setSeatID(String seatID) {
         this.seatID = seatID;
-    }
-
-    public void setCmd(int cmd) {
-        this.cmd = cmd;
     }
 
     public int getRspCode() {
@@ -53,8 +48,4 @@ public class TraderLoginDatagram implements Datagram {
         return new String("Trader id: " + traderID + ", Seat id: " + seatID);
     }
 
-    @Override
-    public int getCmd() {
-        return 0;
-    }
 }
