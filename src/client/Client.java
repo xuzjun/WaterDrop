@@ -20,7 +20,7 @@ import java.util.Iterator;
 public class Client {
 
     public static void main(String[] args) {
-        ByteBuffer buffer = DatagramMaker.makeTraderLoginReqDatagram();
+        ByteBuffer buffer = DatagramMaker.makeTraderLoginReqDatagram(new String("byd0923"), new String("000121"));
         buffer.flip();
 
         try (SocketChannel socketChannel = SocketChannel.open()) {

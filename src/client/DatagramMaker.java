@@ -12,11 +12,11 @@ import java.nio.ByteBuffer;
  */
 public class DatagramMaker {
 
-    static ByteBuffer makeTraderLoginReqDatagram() {
+    static ByteBuffer makeTraderLoginReqDatagram(String traderID, String seatID) {
         TraderLoginDatagram data = new TraderLoginDatagram();
         data.setCmd(Cmds.TRADER_LOGIN_REQ);
-        data.setSeatID("000121");
-        data.setTraderID("byd0123");
+        data.setSeatID(seatID);
+        data.setTraderID(traderID);
 
         String dataJson = JSON.toJSONString(data);
         ByteBuffer buffer = ByteBuffer.allocate(CommConst.INT_SIZE + dataJson.length());
