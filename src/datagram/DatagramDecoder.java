@@ -7,6 +7,7 @@ import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
+import java.util.Map;
 
 /**
  * @author xuzjun
@@ -14,7 +15,6 @@ import java.nio.charset.CharsetDecoder;
 public class DatagramDecoder {
 
     public Datagram decode(ByteBuffer buffer) {
-        // buffer.flip();
         Charset charset = Charset.forName("gbk");
         CharsetDecoder decoder = charset.newDecoder();
         CharBuffer charBuffer = null;
@@ -25,6 +25,13 @@ public class DatagramDecoder {
         }
         String s = charBuffer.toString();
         System.out.println(s);
+        Map m = JSON.parseObject(s);
+        Object o = m.get("cmd");
+        Integer i = o == null ? null : o instanceof Integer ? (Integer) o : null;
+        if (i == null) {
+            return null;
+        }
+        Class class = DatagramFactory.getClass(i);
         Datagram datagramObject = JSON.parseObject(s, TraderLoginDatagram.class);
         return datagramObject;
     }
