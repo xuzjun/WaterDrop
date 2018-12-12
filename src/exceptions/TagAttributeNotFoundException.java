@@ -5,7 +5,7 @@ package exceptions;
  */
 public class TagAttributeNotFoundException extends Throwable {
 
-    public TagAttributeNotFoundException(String s) {
-
+    public TagAttributeNotFoundException(String error) {
+        super(error);
     }
 }

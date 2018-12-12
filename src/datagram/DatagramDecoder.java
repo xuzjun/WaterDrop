@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public class DatagramDecoder {
 
-    public Datagram decode(ByteBuffer buffer) {
+    public Map decode(ByteBuffer buffer) {
         Charset charset = Charset.forName("gbk");
         CharsetDecoder decoder = charset.newDecoder();
         CharBuffer charBuffer = null;
@@ -23,16 +23,16 @@ public class DatagramDecoder {
         } catch (CharacterCodingException e) {
             e.printStackTrace();
         }
+        assert charBuffer != null;
         String s = charBuffer.toString();
         System.out.println(s);
-        Map m = JSON.parseObject(s);
-        Object o = m.get("cmd");
-        Integer i = o == null ? null : o instanceof Integer ? (Integer) o : null;
-        if (i == null) {
-            return null;
-        }
-        Class class = DatagramFactory.getClass(i);
-        Datagram datagramObject = JSON.parseObject(s, TraderLoginDatagram.class);
-        return datagramObject;
+        return JSON.parseObject(s);
+//        Object o = m.get("cmd");
+//        Integer i = o == null ? null : o instanceof Integer ? (Integer) o : null;
+//        if (i == null) {
+//            return null;
+//        }
+//        Class<Datagram> clazz = DatagramFactory.getDatagramClass(i);
+//        return JSON.parseObject(s, clazz);
     }
 }

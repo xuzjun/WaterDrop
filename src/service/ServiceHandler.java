@@ -1,8 +1,7 @@
 package service;
 
-import datagram.Datagram;
-
 import java.util.LinkedList;
+import java.util.Map;
 
 /**
  * @author xuzjun
@@ -17,5 +16,5 @@ public interface ServiceHandler {
      * 返回应答报文列表
      * @return 应答报文列表
      */
-    LinkedList<Datagram> getSendData();
+    LinkedList<Map> getSendData();
 }

@@ -7,7 +7,7 @@ import consts.Cmds;
  */
 public class DatagramFactory {
 
-    public Class getDatagramClass(int cmd) {
+    public static Class getDatagramClass(int cmd) {
         switch (cmd) {
             case Cmds
                     .TRADER_LOGIN_REQ:

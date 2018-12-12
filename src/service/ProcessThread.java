@@ -3,11 +3,13 @@ package service;
 import datagram.Datagram;
 import datagram.DatagramDecoder;
 import datagram.DatagramEncoder;
+import exceptions.DatagramException;
 import network.SocketAndBuffer;
 
 import java.nio.ByteBuffer;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 
@@ -39,12 +41,12 @@ public class ProcessThread implements Runnable {
                 receiveSocketAndBuffer = receiveQueue.poll(100, TimeUnit.MILLISECONDS);
                 if (receiveSocketAndBuffer != null) {
                     ByteBuffer receiveBuffer = receiveSocketAndBuffer.getBuffer();
-                    Datagram receiveData = decoder.decode(receiveBuffer);
+                    Map receiveData = decoder.decode(receiveBuffer);
 
                     ServiceHandler handler = ServiceFactory.getServiceHandler(receiveData);
                     handler.process();
-                    LinkedList<Datagram> sendDataList = handler.getSendData();
-                    Iterator<Datagram> it = sendDataList.iterator();
+                    LinkedList<Map> sendDataList = handler.getSendData();
+                    Iterator<Map> it = sendDataList.iterator();
                     while (it.hasNext()) {
                         ByteBuffer sendBuffer = encoder.encode(it.next());
                         sendBuffer.flip();
@@ -54,6 +56,8 @@ public class ProcessThread implements Runnable {
 
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (DatagramException e) {
                 e.printStackTrace();
             }
         }
