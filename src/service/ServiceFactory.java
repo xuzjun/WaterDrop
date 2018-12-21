@@ -22,7 +22,7 @@ public class ServiceFactory {
             case Cmds.TRADER_LOGIN_REQ:
                 return new TraderLoginHandler(data);
             default:
-                return new GeneralErrorHandler(new ServiceError(ErrorsEnum.CMD_ERROR.getCode(), ErrorsEnum.CMD_ERROR.getMsg()));
+                return new GeneralErrorHandler(new ServiceError(ErrorsEnum.CMD_ERROR));
         }
     }
 }

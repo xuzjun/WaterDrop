@@ -18,10 +18,14 @@ public class GeneralErrorHandler implements ServiceHandler {
     }
 
     @Override
+    public boolean fieldCheck() {
+        return false;
+    }
+
+    @Override
     public void process() {
         Map<String, Object> m = new ConcurrentHashMap<String, Object>(2);
-        m.put("rspCode", error.getRspCode());
-        m.put("rspMsg", error.getRspMsg());
+        m.putAll(error.getMap());
         sendList.add(m);
     }
 

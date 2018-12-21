@@ -27,9 +27,6 @@ public class JsonTest {
         } else {
             System.out.println("cmd is a integer");
         }
-        Integer i2 = Integer.valueOf(o);
-        System.out.println("i2 |" + i2 +"|");
-        Class clazz = TraderLoginDatagram.class;
         System.out.println(tld.toString());
     }
 }

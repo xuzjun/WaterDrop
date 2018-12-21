@@ -7,6 +7,14 @@ import java.util.Map;
  * @author xuzjun
  */
 public interface ServiceHandler {
+
+
+    /**
+     * 请求域检查
+     * @return 检查成功或者失败
+     */
+    boolean fieldCheck();
+
     /**
      * 处理业务
      */
